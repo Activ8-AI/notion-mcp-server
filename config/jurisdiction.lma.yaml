@@ -1,0 +1,14 @@
+# /config/jurisdiction.lma.yaml
+genesis_uuid: "J-LMA-0001"
+charter_version: "MACSE-1.0"
+scope:
+  orgs: ["lma"]
+  repos_whitelist:
+    - "lma/orchestration"
+    - "lma/mcp-*"
+    - "lma/infra-*"
+constraints:
+  cross_domain_override: "prime_two_key_required"
+  evidence_visibility: "summary_only_to_prime"
+  default_branch_protection: true
+  destructive_actions_require_claude: true

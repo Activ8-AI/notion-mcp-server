@@ -1,0 +1,16 @@
+{
+  "domain": "lma",
+  "copilot": {
+    "allowed_repositories": ["github.com/lma/*"],
+    "denied_repositories": [
+      "github.com/activ8ai/*",
+      "github.com/stan-personal/*",
+      "github.com/freedom-acres/*"
+    ],
+    "guidelines": [
+      "Focus on LMA orchestration, MCP posture, and marketing ops hygiene.",
+      "Never surface snippets from non-LMA tenants.",
+      "Honor charter labels including 'charter-locked' and 'tenant-boundary'."
+    ]
+  }
+}

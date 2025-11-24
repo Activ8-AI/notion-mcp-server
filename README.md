@@ -13,9 +13,9 @@
 
 This project implements an [MCP server](https://spec.modelcontextprotocol.io/) for the [Notion API](https://developers.notion.com/reference/intro). 
 
-## Activ8 AI Governor Package
+## Governor Packages
 
-The repo now includes a Genesis-ready orchestration scaffold for the Activ8 AI domain:
+### Activ8 AI
 
 - Jurisdiction manifest: `config/jurisdiction.activ8_ai.yaml`
 - Governor entrypoint: `governors/governor_activ8_ai.py`
@@ -30,6 +30,22 @@ Action path:
 4. Deploy supporting MCP containers (`mcp-core`, `mcp-github`, `mcp-notion`, `mcp-secrets`).
 5. Run the weekly workflow so the governor performs hygiene with Claude validation and Relay evidence.
 6. Emit prime heartbeat summaries (Green/Yellow/Red) and red-team to ensure no cross-domain bleed.
+
+### LMA
+
+- Jurisdiction manifest: `config/jurisdiction.lma.yaml`
+- Governor entrypoint: `governors/governor_lma.py`
+- Weekly workflow: `.github/workflows/lma-governor-weekly.yml`
+- Copilot guardrails: `config/copilot.lma.json`
+- Secrets layout notes: `docs/lma-secrets.md`
+
+Action path:
+1. Stand up the orchestration repo (`lma/orchestration`).
+2. Drop in the scaffolds above along with your `mcp_clients` and relay layers.
+3. Load scoped secrets (`LMA_GITHUB_PAT`, `LMA_NOTION_API_KEY`) into the GitHub org.
+4. Deploy supporting MCP containers (`mcp-core`, `mcp-github`, `mcp-notion`, `mcp-secrets`).
+5. Run the weekly workflow so the governor performs hygiene with Claude validation and Relay evidence.
+6. Emit prime heartbeat summaries (Green/Yellow/Red) and red-team to ensure no cross-domain bleed plus destructive-action enforcement.
 
 ![mcp-demo](https://github.com/user-attachments/assets/e3ff90a7-7801-48a9-b807-f7dd47f0d3d6)
 

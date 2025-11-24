@@ -1,0 +1,20 @@
+name: LMA Weekly Hygiene
+on:
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch: {}
+jobs:
+  run-governor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Run LMA governor
+        env:
+          DOMAIN: lma
+          GITHUB_PAT: ${{ secrets.LMA_GITHUB_PAT }}
+          NOTION_API_KEY: ${{ secrets.LMA_NOTION_API_KEY }}
+        run: python governors/governor_lma.py
