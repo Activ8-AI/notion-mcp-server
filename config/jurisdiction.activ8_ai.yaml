@@ -1,0 +1,14 @@
+# /config/jurisdiction.activ8_ai.yaml
+genesis_uuid: "J-AX8-0001"
+charter_version: "MACSE-1.0"
+scope:
+  orgs: ["activ8ai"]
+  repos_whitelist:
+    - "activ8ai/maos"
+    - "activ8ai/orchestration"
+    - "activ8ai/mcp-*"
+constraints:
+  cross_domain_override: "prime_two_key_required"
+  evidence_visibility: "summary_only_to_prime"
+  default_branch_protection: true
+  destructive_actions_require_claude: true

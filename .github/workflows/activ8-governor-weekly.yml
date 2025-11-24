@@ -1,0 +1,20 @@
+name: Activ8 AI Weekly Hygiene
+on:
+  schedule:
+    - cron: "0 3 * * 1"
+  workflow_dispatch: {}
+jobs:
+  run-governor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Run Activ8 governor
+        env:
+          DOMAIN: activ8_ai
+          GITHUB_PAT: ${{ secrets.ACTIV8_GITHUB_PAT }}
+          NOTION_API_KEY: ${{ secrets.ACTIV8_NOTION_API_KEY }}
+        run: python governors/governor_activ8_ai.py

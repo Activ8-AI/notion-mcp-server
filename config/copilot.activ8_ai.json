@@ -1,0 +1,16 @@
+{
+  "domain": "activ8_ai",
+  "copilot": {
+    "allowed_repositories": ["github.com/activ8ai/*"],
+    "denied_repositories": [
+      "github.com/leverage-marketing/*",
+      "github.com/stan-personal/*",
+      "github.com/freedom-acres/*"
+    ],
+    "guidelines": [
+      "Prioritize MCP integration and secure infrastructure code.",
+      "Do not surface prompts or snippets from other domains.",
+      "Respect charter labels: 'charter-locked', 'tenant-boundary'."
+    ]
+  }
+}
