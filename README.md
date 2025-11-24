@@ -306,6 +306,16 @@ Add a page titled "Notion MCP" to page "Development"
 Get the content of page 1a6b35e6e67f802fa7e1d27686f017f2
 ```
 
+### Competitive Intelligence Engine (v1)
+
+Charter-standard external intelligence is now part of this MCP stack. The Competitive Intelligence Engine links the MAOS Reflex lattice, Codex governance, and the Client Portal so that competitor deltas become executable work:
+
+- `docs/competitive-intelligence-engine.md` – architecture, data flows, and portal wiring.
+- `agents.md` – Agent Hub registry (assignment rules, triggers, output contracts, governance hooks).
+- `src/competitive-intel` – TypeScript scaffolding that ingests the Competitor Definition Map, normalizes web-analysis agent signals, and auto-creates Teamwork reflex tasks while publishing Client Portal widgets.
+
+Use these assets to hydrate the Competitor Definition Map (Notion + Codex), connect the six web-analysis agents, and bind Reflex → Teamwork pipelines so every external delta lands as an actionable brief with Custodian visibility.
+
 ### Development
 
 Build
