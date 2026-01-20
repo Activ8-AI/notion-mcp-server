@@ -36,9 +36,9 @@ This is an Activ8-AI maintained fork of [Notion MCP Server](https://github.com/m
 For complete governance documentation, see:
 - **Main Repository**: [Activ8-AI/mcp](https://github.com/Activ8-AI/mcp) - Primary governance standards
 - **Upstream**: [makenotion/notion-mcp-server](https://github.com/makenotion/notion-mcp-server) - Original project
-- **Notion MCP Docs**: [developers.notion.com/docs/mcp](https://developers.notion.com/docs/mcp) - Official MCP integration
-- **MCP Protocol**: [spec.modelcontextprotocol.io](https://spec.modelcontextprotocol.io/) - Protocol specification
-- **Notion API**: [developers.notion.com/reference/intro](https://developers.notion.com/reference/intro) - API reference
+- **Notion MCP Docs**: [https://developers.notion.com/docs/mcp](https://developers.notion.com/docs/mcp) - Official MCP integration
+- **MCP Protocol**: [https://spec.modelcontextprotocol.io/](https://spec.modelcontextprotocol.io/) - Protocol specification
+- **Notion API**: [https://developers.notion.com/reference/intro](https://developers.notion.com/reference/intro) - API reference
 
 ### High-Risk Powers
 
