@@ -9,6 +9,78 @@
 > Learn more and try it out [here](https://developers.notion.com/docs/mcp)
 
 
+## 🧭 MAOS v1 Governance (Activ8-AI Fork)
+
+This fork operates under MAOS v1 (Modular Automation Operating System) governance framework, which establishes:
+
+- **Tier 3 Repository Classification**: Full governance controls with automated agent workflows
+- **Charter Compliance**: All changes must align with Charter Standards for security, modularity, and provider-agnostic design
+- **Fail-Closed Enforcement**: Required governance checks must pass before merge
+- **Human Authority**: All merges require explicit human approval
+- **Audit Trail**: Comprehensive logging and compliance tracking
+
+### Fork-Specific Governance
+
+This is an Activ8-AI maintained fork of [Notion MCP Server](https://github.com/makenotion/notion-mcp-server).
+
+**Upstream Synchronization**:
+- Regular syncs with upstream Notion MCP Server repository
+- Activ8-AI specific modifications tracked separately
+- Governance requirements apply to Activ8-AI changes only
+
+**Contribution Guidelines**:
+- Upstream contributions should be made to the original Notion repository
+- Activ8-AI specific features require governance approval
+- See main repository [Activ8-AI/mcp](https://github.com/Activ8-AI/mcp) for governance details
+
+For complete governance documentation, see:
+- **Main Repository**: [Activ8-AI/mcp](https://github.com/Activ8-AI/mcp) - Primary governance standards
+- **Upstream**: [makenotion/notion-mcp-server](https://github.com/makenotion/notion-mcp-server) - Original project
+- **Notion MCP Docs**: [https://developers.notion.com/docs/mcp](https://developers.notion.com/docs/mcp) - Official MCP integration
+- **MCP Protocol**: [https://spec.modelcontextprotocol.io/](https://spec.modelcontextprotocol.io/) - Protocol specification
+- **Notion API**: [https://developers.notion.com/reference/intro](https://developers.notion.com/reference/intro) - API reference
+
+### High-Risk Powers
+
+This Notion MCP server has specific governance requirements:
+
+- **Notion Integration**: Full access to Notion workspace pages and databases
+- **MCP Protocol**: Model Context Protocol server implementation
+- **API Operations**: Comprehensive Notion API operations (search, create, update, comment)
+- **Integration Tokens**: Notion internal integration authentication
+- **OAuth Support**: Standard OAuth for easy installation
+- **Page Access**: Read/write access to connected Notion pages
+- **Database Operations**: Query and modify Notion databases
+- **Comment Creation**: Add comments to pages and databases
+- **STDIO Transport**: Standard input/output MCP communication
+- **HTTP Transport**: Streamable HTTP MCP endpoints with authentication
+- **Docker Deployment**: Containerized server deployment
+- **OpenAPI MCP**: OpenAPI specification for MCP operations
+
+All high-risk operations are:
+- Gated behind required human approval
+- Logged for audit compliance
+- Subject to automated security scanning
+- Governed by principle of least privilege
+- Require secure credential management
+
+### Security Notes
+
+- **Integration Tokens**: Never commit Notion integration tokens (`ntn_****`) to version control
+- **OAuth Credentials**: Secure OAuth client secrets and tokens
+- **Page Permissions**: Grant integration access only to required pages
+- **Read-Only Option**: Use read-only integration capabilities when write access isn't needed
+- **Bearer Tokens**: Protect HTTP transport bearer authentication tokens
+- **Environment Variables**: Use `.env` files for all credentials (exclude from git)
+- **Token Rotation**: Regularly rotate Notion integration tokens
+- **Access Auditing**: Review Notion integration access regularly
+- **MCP Security**: Secure MCP server endpoints and authentication
+- **Docker Security**: Keep Docker images updated and scan for vulnerabilities
+- **PII Protection**: Be cautious with personal data in Notion pages exposed to LLMs
+- **Database Scope**: Limit database exposure to minimize data access risk
+- **HTTP Authentication**: Use strong bearer tokens for HTTP transport
+- **Session Management**: Implement proper MCP session handling
+
 ![notion-mcp-sm](https://github.com/user-attachments/assets/6c07003c-8455-4636-b298-d60ffdf46cd8)
 
 This project implements an [MCP server](https://spec.modelcontextprotocol.io/) for the [Notion API](https://developers.notion.com/reference/intro). 
