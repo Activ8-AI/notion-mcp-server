@@ -19,7 +19,11 @@
     "query:source-ladder": "node scripts/query-source-ladder.mjs",
     "session:boot": "node scripts/session-boot.mjs",
     "context:sync:self": "node scripts/sync-context-pack.mjs --target . --strict",
-    "agents:sync:auto": "node scripts/sync-agent-instructions.mjs --fix --push-notion --emit-notion"
+    "agents:sync:auto": "node scripts/sync-agent-instructions.mjs --fix --push-notion --emit-notion",
+    "mcp:sync": "node scripts/sync-mcp-connections.mjs",
+    "mcp:sync:dry": "node scripts/sync-mcp-connections.mjs --dry-run",
+    "postinstall": "npm run mcp:sync",
+    "governance:thresholds:check": "node scripts/check-governance-threshold-instrumentation.mjs"
   },
   "bin": {
     "notion-mcp-server": "bin/cli.mjs"

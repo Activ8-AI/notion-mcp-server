@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 // managed-by: activ8-ai-context-pack | pack-version: 1.1.0
-// source-sha: 49e7fd4
+// source-sha: a0d4785
 
 import { mkdirSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { safePersistActionReceipt } from "./lib/action-persistence.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = join(__dirname, "..");
+const REPO_ROOT = resolve(__dirname, "..");
 const OUTPUT_DIR = join(REPO_ROOT, "artifacts", "build-operationalization");
 const PROMPT_LIBRARY_DATABASE_ID =
   process.env.NOTION_PROMPT_LIBRARY_DATABASE_ID
@@ -120,6 +120,7 @@ async function main() {
 
   if (withSync && !dryRun) {
     steps.push(runScript("scripts/sync-context-pack.mjs", ["--target", ".", "--strict"]));
+    steps.push(runScript("scripts/sync-mcp-connections.mjs"));
     steps.push(
       runScript("scripts/sync-agent-instructions.mjs", [
         "--fix",
@@ -136,6 +137,12 @@ async function main() {
     });
     steps.push({
       name: "agent-instruction-auto-sync",
+      ok: true,
+      skipped: true,
+      detail: dryRun ? "auto-update skipped in dry-run mode" : "auto-update requires --with-sync",
+    });
+    steps.push({
+      name: "mcp-surface-auto-sync",
       ok: true,
       skipped: true,
       detail: dryRun ? "auto-update skipped in dry-run mode" : "auto-update requires --with-sync",

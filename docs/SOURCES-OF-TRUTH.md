@@ -1,5 +1,5 @@
 <!-- managed-by: activ8-ai-context-pack | pack-version: 1.2.0 -->
-<!-- source-sha: 49e7fd4 -->
+<!-- source-sha: a0d4785 -->
 <!-- updated: 2026-03-18 -->
 
 # Sources of Truth — @notionhq/notion-mcp-server
@@ -46,6 +46,9 @@ When working on governed artifacts:
 | Need | Where |
 | --- | --- |
 | Audience, naming, and trace contract | `docs/AUDIENCE-SURFACE-CONTRACT.md` |
+| Repo-local five-plane governance binding | `artifacts/codex/meta-mega/MAOS-Governance-Codex-v1.md` |
+| MAOS governance narrative / white paper | `docs/MAOS-GOVERNANCE-CODEX-WHITE-PAPER-v1.md` |
+| MAOS governance reusable rule set | `artifacts/governance/MAOS-GOVERNANCE-CODEX-POLICY-AS-CODE-CATALOG-v1.md` |
 | Current state / what’s in flight | `memory/MEMORY.md` |
 | Lessons learned / gotchas | `memory/key-lessons.md` |
 | Operator preferences | `memory/operator-preferences-learn-me.md` |

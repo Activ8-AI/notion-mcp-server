@@ -1,5 +1,5 @@
 <!-- managed-by: activ8-ai-context-pack | pack-version: 1.2.0 -->
-<!-- source-sha: 49e7fd4 -->
+<!-- source-sha: a0d4785 -->
 <!-- platform: gemini | tier: T2 | version: 1.2.0 | policy: ai-agent-policy@wrapper | updated: 2026-03-18 -->
 
 # Gemini Agent Instructions — @notionhq/notion-mcp-server
@@ -31,6 +31,29 @@
 - **Build on established work:** extend, refine, or elevate what exists. Respect artifact lineage.
 - **Create new only when necessary:** new artifacts or structures only when no suitable reference, structure, or precedent exists.
 - **Fail closed on deviation:** if verification is missing, the user correction changes the path, or drift is detected, stop, surface the mismatch, and restart from verified state.
+
+## Persistent Learning System Contract
+
+- MAOS is a persistent learning system that happens to execute work.
+- Govern work through sensing, thinking, execution, and learning surfaces.
+- The minimum learning loop is `Experience -> Extraction -> Structuring -> Storage -> Retrieval -> Application -> Feedback`.
+- Learning is not complete until the result is stored, indexed, and reused automatically.
+
+## Agentic Governance Five-Plane Contract
+
+- Agentic AI governance is a multi-plane control problem, not a prompt-only problem.
+- Govern the system through five linked planes: control, execution, data, learning, and safety.
+- Use OODA for live operations, PDCA for governed change, and state -> action -> outcome -> update for policy adaptation.
+- No execution without authority, no learning without provenance, and no adaptation without evaluation, drift detection, and rollback.
+
+## NIST AI RMF Mapping
+
+- Use `artifacts/prompt-library/MAOS-NIST-AI-RMF-MAPPING.md` as the external governance import layer for MAOS.
+- `GOVERN` -> control plane.
+- `MAP` -> context framing and go/no-go.
+- `MEASURE` -> evidence, telemetry, and evaluation.
+- `MANAGE` -> response, override, rollback, deactivation, and continual improvement.
+- Import NIST as enforceable control-plane logic for socio-technical agent systems, not as a generic compliance checklist.
 
 ## Trace Rule
 

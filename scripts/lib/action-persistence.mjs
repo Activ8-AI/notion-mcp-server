@@ -1,5 +1,5 @@
 // managed-by: activ8-ai-context-pack | pack-version: 1.1.0
-// source-sha: 49e7fd4
+// source-sha: a0d4785
 import {
   appendFileSync,
   existsSync,
@@ -9,6 +9,7 @@ import {
 } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { join } from "node:path";
+import { safePersistRecurrenceRecord } from "./recurrence-control.mjs";
 
 function nowCtParts() {
   const parts = new Intl.DateTimeFormat("en-US", {
@@ -96,6 +97,7 @@ export function persistActionReceipt({
   evidence = {},
   artifacts = {},
   metadata = {},
+  recurrence = null,
   error = null,
 }) {
   const baseDir = baseDirFor(repoRoot);
@@ -127,6 +129,7 @@ export function persistActionReceipt({
     evidence,
     artifacts,
     metadata,
+    recurrence,
     error: error
       ? {
           message: error.message || String(error),
@@ -152,6 +155,23 @@ export function persistActionReceipt({
   writeFileSync(latestPath, `${JSON.stringify(receipt, null, 2)}\n`, "utf-8");
   appendFileSync(ledgerPath, `${JSON.stringify(receipt)}\n`, "utf-8");
 
+  const recurrencePersistence = recurrence
+    ? safePersistRecurrenceRecord({
+        repoRoot,
+        ...recurrence,
+        actionId,
+        requestId: requestId || null,
+        startedAtMs,
+        finishedAtMs,
+        evidence: {
+          ...evidence,
+          action_receipt_latest_path: latestPath,
+        },
+        artifacts,
+        metadata,
+      })?.persistence || null
+    : null;
+
   return {
     ...receipt,
     persistence: {
@@ -160,6 +180,7 @@ export function persistActionReceipt({
       ledger_path: ledgerPath,
       previous_latest: previousLatest,
     },
+    recurrence_persistence: recurrencePersistence,
   };
 }
 

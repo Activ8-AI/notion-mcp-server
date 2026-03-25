@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // managed-by: activ8-ai-context-pack | pack-version: 1.2.0
-// source-sha: 49e7fd4
+// source-sha: a0d4785
 /**
  * lint-alias-drift.mjs
  * Fail closed on stale MCP naming/alias drift in active repo surfaces.

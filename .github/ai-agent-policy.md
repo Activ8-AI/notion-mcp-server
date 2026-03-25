@@ -1,5 +1,5 @@
 <!-- managed-by: activ8-ai-context-pack | pack-version: 1.2.0 -->
-<!-- source-sha: 49e7fd4 -->
+<!-- source-sha: a0d4785 -->
 <!-- purpose: Thin wrapper to bind this repo to the Activ8 AI Charter + central policy -->
 <!-- updated: 2026-03-18 -->
 
@@ -55,6 +55,31 @@ Lower surfaces may specialize behavior for the platform, but they must not overr
 - Prompt Library is the retained learning and distribution spine for prompts, instructions, and skill surfaces that can be synced.
 - Minor wording changes can update in place; material logic or planning-template changes require a versioned iteration.
 
+## Persistent Learning System Contract
+
+- MAOS is a persistent learning system that happens to execute work.
+- Govern this repo through four engines: sensing, thinking, execution, and learning.
+- The minimum learning loop is `Experience -> Extraction -> Structuring -> Storage -> Retrieval -> Application -> Feedback`.
+- Learning is not complete until the result is stored, indexed, and reused automatically.
+- Session closeout, Prompt Library propagation, Codex routing, and repo/fleet operationalization are required retained-learning surfaces.
+
+## Agentic Governance Five-Plane Contract
+
+- Agentic AI governance is a multi-plane control problem, not a prompt-only problem.
+- Govern the system through five linked planes: control, execution, data, learning, and safety.
+- Use OODA for live operations, PDCA for governed change, and state -> action -> outcome -> update for policy adaptation.
+- No execution without authority, no learning without provenance, and no adaptation without evaluation, drift detection, and rollback.
+- Capability thresholds, evidence logs, and mitigation review are required before high-impact deployment.
+
+## NIST AI RMF Mapping
+
+- Use `artifacts/prompt-library/MAOS-NIST-AI-RMF-MAPPING.md` as the external governance import layer for MAOS.
+- `GOVERN` -> control plane.
+- `MAP` -> context framing and go/no-go.
+- `MEASURE` -> evidence, telemetry, and evaluation.
+- `MANAGE` -> response, override, rollback, deactivation, and continual improvement.
+- Import NIST as enforceable control-plane logic for socio-technical agent systems, not as a generic compliance checklist.
+
 ## Seek First to Understand + Verify What Exists
 
 - **Seek First to Understand:** before answering, deciding, or acting, gather context and ensure full comprehension.
@@ -84,6 +109,18 @@ Lower surfaces may specialize behavior for the platform, but they must not overr
 - Start from `memory/session-brief.md` when present.
 - `scripts/session-boot.mjs` must call `scripts/query-source-ladder.mjs` automatically and write source-bootstrap evidence into the brief.
 - If bootstrap binding is missing or stale, fail closed and restore the managed-repo contract before proceeding.
+
+## Prime Bridge Access Contract
+
+- Prime Bridge is a first-class control-plane surface, not a side channel.
+- Managed repos must keep `config/mcp-connections.json` and `scripts/sync-mcp-connections.mjs` aligned so the unified server is callable from every attached surface.
+- `npm run mcp:sync` is part of the managed repo contract. Use it to propagate Prime Bridge and unified MCP access across IDE and agent surfaces.
+
+## Runtime Session Bootstrap Gate
+
+- `agent_session_init` is the runtime bootstrap gate for identity-bound sessions.
+- Call it before substantive MCP tool use and continue from the returned seek-first planning payload.
+- If the runtime returns `SESSION_INIT_REQUIRED`, bootstrap first instead of working around the gate.
 
 ## Audience + Surface Contract
 

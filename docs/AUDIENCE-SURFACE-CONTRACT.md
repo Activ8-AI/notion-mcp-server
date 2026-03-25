@@ -1,5 +1,5 @@
 <!-- managed-by: activ8-ai-context-pack | pack-version: 1.2.0 -->
-<!-- source-sha: 49e7fd4 -->
+<!-- source-sha: a0d4785 -->
 <!-- updated: 2026-03-18 -->
 
 # Audience + Surface Contract — @notionhq/notion-mcp-server

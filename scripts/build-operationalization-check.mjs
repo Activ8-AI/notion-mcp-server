@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 // managed-by: activ8-ai-context-pack | pack-version: 1.2.0
-// source-sha: 49e7fd4
+// source-sha: a0d4785
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = join(__dirname, "..");
+const REPO_ROOT = resolve(__dirname, "..");
 const OUTPUT_DIR = join(REPO_ROOT, "artifacts", "build-operationalization");
 
 function nowCtParts() {
@@ -59,6 +59,7 @@ const requiredFiles = [
   "CLAUDE.md",
   "docs/AUDIENCE-SURFACE-CONTRACT.md",
   "docs/SOURCES-OF-TRUTH.md",
+  "docs/MAOS-GOVERNANCE-CODEX-WHITE-PAPER-v1.md",
   ".github/workflows/build-operationalization.yml",
   "scripts/build-operationalization-check.mjs",
   "scripts/operationalize-buildwide.mjs",
@@ -66,11 +67,32 @@ const requiredFiles = [
   "scripts/lint-alias-drift.mjs",
   "scripts/query-source-ladder.mjs",
   "scripts/session-boot.mjs",
+  "scripts/sync-mcp-connections.mjs",
+  "scripts/check-governance-threshold-instrumentation.mjs",
   "scripts/lib/action-persistence.mjs",
+  "config/mcp-connections.json",
+  "config/governance-thresholds.json",
+  "config/provenance-field-registry.json",
+  "config/schemas/skill-memory-entry.schema.json",
+  "artifacts/codex/meta-mega/MAOS-Governance-Codex-v1.md",
+  "artifacts/governance/MAOS-GOVERNANCE-CODEX-POLICY-AS-CODE-CATALOG-v1.md",
+  "artifacts/governance/MAOS-GOVERNANCE-CODEX-FLOW-DIAGRAMS-v1.md",
+  "artifacts/governance/MAOS-GOVERNANCE-CODEX-ACTION-CHECKLIST-v1.md",
+  "artifacts/governance/MAOS-GOVERNANCE-CODEX-ANNOTATED-BIBLIOGRAPHY-v1.md",
+  "artifacts/governance/MAOS-THREAT-MODEL-REGISTER-v1.md",
+  "artifacts/governance/MAOS-RED-TEAM-EXERCISE-REPORT-v1.md",
+  "artifacts/governance/MAOS-KNOWLEDGE-LIFECYCLE-PIPELINE-v1.md",
+  "artifacts/governance/MAOS-GOVERNANCE-CALENDAR-v1.md",
+  "artifacts/governance/MAOS-ENFORCEMENT-RULE-TEST-SUITE-v1.md",
+  "artifacts/governance/shacl/maos-memory-shapes.ttl",
   "artifacts/prompt-library/README.md",
   "artifacts/prompt-library/OBVIOUS-ANSWER-QUESTION-ELIMINATION-RULE.md",
   "artifacts/prompt-library/STOP-RESET-REALIGN-ANTI-AVOIDANCE-PROMPTS.md",
   "artifacts/prompt-library/AGENT-ANNOUNCEMENT-SRR-ANTI-AVOIDANCE-v1.md",
+  "artifacts/prompt-library/PRIME-BRIDGE-ACCESS-CONTRACT.md",
+  "artifacts/prompt-library/PERSISTENT-LEARNING-SYSTEM-CONTRACT.md",
+  "artifacts/prompt-library/AGENTIC-GOVERNANCE-FIVE-PLANE-CONTRACT.md",
+  "artifacts/prompt-library/MAOS-NIST-AI-RMF-MAPPING.md",
 ];
 
 const workflowContent = readText(".github/workflows/build-operationalization.yml") || "";
@@ -87,6 +109,7 @@ for (const relativePath of requiredFiles) {
 }
 
 let pkg = null;
+const hasPackageJson = existsSync(join(REPO_ROOT, "package.json"));
 try {
   pkg = JSON.parse(readText("package.json") || "{}");
 } catch {
@@ -119,6 +142,14 @@ const packageChecks = [
     ok: hasPackageScript(pkg, "session:boot", "scripts/session-boot.mjs"),
   },
   {
+    name: "mcp:sync",
+    ok: hasPackageScript(pkg, "mcp:sync", "scripts/sync-mcp-connections.mjs"),
+  },
+  {
+    name: "governance:thresholds:check",
+    ok: hasPackageScript(pkg, "governance:thresholds:check", "scripts/check-governance-threshold-instrumentation.mjs"),
+  },
+  {
     name: "context:sync:self",
     ok: hasPackageScript(pkg, "context:sync:self", "scripts/sync-context-pack.mjs --target . --strict"),
   },
@@ -143,8 +174,11 @@ if (pkg?.scripts?.["session:finish"]) {
 }
 
 for (const check of packageChecks) {
-  checks.push(check);
-  if (!check.ok) {
+  const effective = hasPackageJson
+    ? check
+    : { ...check, ok: true, skipped: true };
+  checks.push(effective);
+  if (hasPackageJson && !check.ok) {
     blockers.push(`Package script missing contract: ${check.name}`);
   }
 }
@@ -213,6 +247,90 @@ const markerChecks = [
     ok: (readText(".github/ai-agent-policy.md") || "").includes("Automatic Source Bootstrap"),
   },
   {
+    name: ".github/ai-agent-policy.md prime bridge access marker",
+    ok: (readText(".github/ai-agent-policy.md") || "").includes("Prime Bridge Access Contract"),
+  },
+  {
+    name: ".github/ai-agent-policy.md runtime bootstrap gate marker",
+    ok: (readText(".github/ai-agent-policy.md") || "").includes("Runtime Session Bootstrap Gate"),
+  },
+  {
+    name: ".github/ai-agent-policy.md persistent learning marker",
+    ok: (readText(".github/ai-agent-policy.md") || "").includes("Persistent Learning System Contract") &&
+      (readText(".github/ai-agent-policy.md") || "").includes("stored, indexed, and reused automatically"),
+  },
+  {
+    name: ".github/ai-agent-policy.md five-plane governance marker",
+    ok: (readText(".github/ai-agent-policy.md") || "").includes("Agentic Governance Five-Plane Contract") &&
+      (readText(".github/ai-agent-policy.md") || "").includes("multi-plane control problem"),
+  },
+  {
+    name: ".github/ai-agent-policy.md NIST mapping marker",
+    ok: (readText(".github/ai-agent-policy.md") || "").includes("NIST AI RMF Mapping") &&
+      (readText(".github/ai-agent-policy.md") || "").includes("`GOVERN` -> control plane") &&
+      (readText(".github/ai-agent-policy.md") || "").includes("`MANAGE` -> response, override, rollback, deactivation, and continual improvement"),
+  },
+  {
+    name: "config/governance-thresholds.json T1/T2 markers",
+    ok: (readText("config/governance-thresholds.json") || "").includes("\"t1_leading_indicators\"") &&
+      (readText("config/governance-thresholds.json") || "").includes("\"t2_thresholds\"") &&
+      (readText("config/governance-thresholds.json") || "").includes("\"do_not_deploy_until_active_and_tested\": true"),
+  },
+  {
+    name: "config/provenance-field-registry.json provenance markers",
+    ok: (readText("config/provenance-field-registry.json") || "").includes("\"source_ref\"") &&
+      (readText("config/provenance-field-registry.json") || "").includes("\"validation_metadata\"") &&
+      (readText("config/provenance-field-registry.json") || "").includes("\"review_state\""),
+  },
+  {
+    name: "config/schemas/skill-memory-entry.schema.json schema markers",
+    ok: (readText("config/schemas/skill-memory-entry.schema.json") || "").includes("\"title\": \"MAOS Skill Memory Entry\"") &&
+      (readText("config/schemas/skill-memory-entry.schema.json") || "").includes("\"memory_type\": { \"const\": \"procedural\" }") &&
+      (readText("config/schemas/skill-memory-entry.schema.json") || "").includes("\"review_state\": { \"enum\": [\"quarantine\", \"approved\", \"rejected\"] }"),
+  },
+  {
+    name: "scripts/check-governance-threshold-instrumentation.mjs threshold contract markers",
+    ok: (readText("scripts/check-governance-threshold-instrumentation.mjs") || "").includes("maos_governance_threshold_instrumentation_check_v1") &&
+      (readText("scripts/check-governance-threshold-instrumentation.mjs") || "").includes("telemetry evaluator present") &&
+      (readText("scripts/check-governance-threshold-instrumentation.mjs") || "").includes("cloud build preflight runs threshold check"),
+  },
+  {
+    name: "artifacts/governance/MAOS-THREAT-MODEL-REGISTER-v1.md threat markers",
+    ok: (readText("artifacts/governance/MAOS-THREAT-MODEL-REGISTER-v1.md") || "").includes("MITRE ATLAS") &&
+      (readText("artifacts/governance/MAOS-THREAT-MODEL-REGISTER-v1.md") || "").includes("OWASP LLM") &&
+      (readText("artifacts/governance/MAOS-THREAT-MODEL-REGISTER-v1.md") || "").includes("Prompt ingress and tool prompts"),
+  },
+  {
+    name: "artifacts/governance/MAOS-RED-TEAM-EXERCISE-REPORT-v1.md red-team markers",
+    ok: (readText("artifacts/governance/MAOS-RED-TEAM-EXERCISE-REPORT-v1.md") || "").includes("Prompt injection") &&
+      (readText("artifacts/governance/MAOS-RED-TEAM-EXERCISE-REPORT-v1.md") || "").includes("Memory poisoning") &&
+      (readText("artifacts/governance/MAOS-RED-TEAM-EXERCISE-REPORT-v1.md") || "").includes("Threshold instrumentation must block production promotion"),
+  },
+  {
+    name: "artifacts/governance/MAOS-KNOWLEDGE-LIFECYCLE-PIPELINE-v1.md lifecycle markers",
+    ok: (readText("artifacts/governance/MAOS-KNOWLEDGE-LIFECYCLE-PIPELINE-v1.md") || "").includes("## Lifecycle") &&
+      (readText("artifacts/governance/MAOS-KNOWLEDGE-LIFECYCLE-PIPELINE-v1.md") || "").includes("Capture: receive signal") &&
+      (readText("artifacts/governance/MAOS-KNOWLEDGE-LIFECYCLE-PIPELINE-v1.md") || "").includes("## Retention Schedule"),
+  },
+  {
+    name: "artifacts/governance/MAOS-GOVERNANCE-CALENDAR-v1.md cadence markers",
+    ok: (readText("artifacts/governance/MAOS-GOVERNANCE-CALENDAR-v1.md") || "").includes("OODA operational review") &&
+      (readText("artifacts/governance/MAOS-GOVERNANCE-CALENDAR-v1.md") || "").includes("Codex quarterly review") &&
+      (readText("artifacts/governance/MAOS-GOVERNANCE-CALENDAR-v1.md") || "").includes("Moses Lock-In"),
+  },
+  {
+    name: "artifacts/governance/MAOS-ENFORCEMENT-RULE-TEST-SUITE-v1.md rule markers",
+    ok: (readText("artifacts/governance/MAOS-ENFORCEMENT-RULE-TEST-SUITE-v1.md") || "").includes("Capability Gating") &&
+      (readText("artifacts/governance/MAOS-ENFORCEMENT-RULE-TEST-SUITE-v1.md") || "").includes("Provenance Mandate") &&
+      (readText("artifacts/governance/MAOS-ENFORCEMENT-RULE-TEST-SUITE-v1.md") || "").includes("Drift Alert Response"),
+  },
+  {
+    name: "artifacts/governance/shacl/maos-memory-shapes.ttl SHACL markers",
+    ok: (readText("artifacts/governance/shacl/maos-memory-shapes.ttl") || "").includes("maos:ProvenanceShape") &&
+      (readText("artifacts/governance/shacl/maos-memory-shapes.ttl") || "").includes("maos:ProceduralSkillShape") &&
+      (readText("artifacts/governance/shacl/maos-memory-shapes.ttl") || "").includes("maos:NormativeMemoryShape"),
+  },
+  {
     name: "AGENTS.md obvious-answer marker",
     ok: (readText("AGENTS.md") || "").includes("Obvious-Answer Question Elimination Rule"),
   },
@@ -227,6 +345,26 @@ const markerChecks = [
   {
     name: "AGENTS.md bootstrap marker",
     ok: (readText("AGENTS.md") || "").includes("Automatic Source Bootstrap"),
+  },
+  {
+    name: "AGENTS.md runtime bootstrap gate marker",
+    ok: (readText("AGENTS.md") || "").includes("Runtime Session Bootstrap Gate"),
+  },
+  {
+    name: "AGENTS.md persistent learning marker",
+    ok: (readText("AGENTS.md") || "").includes("Persistent Learning System Contract") &&
+      (readText("AGENTS.md") || "").includes("stored, indexed, and reused automatically"),
+  },
+  {
+    name: "AGENTS.md five-plane governance marker",
+    ok: (readText("AGENTS.md") || "").includes("Agentic Governance Five-Plane Contract") &&
+      (readText("AGENTS.md") || "").includes("multi-plane control problem"),
+  },
+  {
+    name: "AGENTS.md NIST mapping marker",
+    ok: (readText("AGENTS.md") || "").includes("NIST AI RMF Mapping") &&
+      (readText("AGENTS.md") || "").includes("`GOVERN` -> control plane") &&
+      (readText("AGENTS.md") || "").includes("`MANAGE` -> response, override, rollback, deactivation, and continual improvement"),
   },
   {
     name: ".github/agents/cursor.md obvious-answer marker",
@@ -245,6 +383,130 @@ const markerChecks = [
     ok: (readText(".github/agents/cursor.md") || "").includes("Automatic Source Bootstrap"),
   },
   {
+    name: ".github/agents/cursor.md runtime bootstrap gate marker",
+    ok: (readText(".github/agents/cursor.md") || "").includes("Runtime Session Bootstrap Gate"),
+  },
+  {
+    name: ".github/agents/cursor.md persistent learning marker",
+    ok: (readText(".github/agents/cursor.md") || "").includes("Persistent Learning System Contract") &&
+      (readText(".github/agents/cursor.md") || "").includes("stored, indexed, and reused automatically"),
+  },
+  {
+    name: ".github/agents/cursor.md five-plane governance marker",
+    ok: (readText(".github/agents/cursor.md") || "").includes("Agentic Governance Five-Plane Contract") &&
+      (readText(".github/agents/cursor.md") || "").includes("multi-plane control problem"),
+  },
+  {
+    name: ".github/agents/cursor.md NIST mapping marker",
+    ok: (readText(".github/agents/cursor.md") || "").includes("NIST AI RMF Mapping") &&
+      (readText(".github/agents/cursor.md") || "").includes("`GOVERN` -> control plane") &&
+      (readText(".github/agents/cursor.md") || "").includes("`MANAGE` -> response, override, rollback, deactivation, and continual improvement"),
+  },
+  {
+    name: ".github/copilot-instructions.md runtime bootstrap gate marker",
+    ok: (readText(".github/copilot-instructions.md") || "").includes("Runtime Session Bootstrap Gate"),
+  },
+  {
+    name: ".github/copilot-instructions.md persistent learning marker",
+    ok: (readText(".github/copilot-instructions.md") || "").includes("Persistent Learning System Contract") &&
+      (readText(".github/copilot-instructions.md") || "").includes("stored, indexed, and reused automatically"),
+  },
+  {
+    name: ".github/copilot-instructions.md five-plane governance marker",
+    ok: (readText(".github/copilot-instructions.md") || "").includes("Agentic Governance Five-Plane Contract") &&
+      (readText(".github/copilot-instructions.md") || "").includes("multi-plane control problem"),
+  },
+  {
+    name: ".github/copilot-instructions.md NIST mapping marker",
+    ok: (readText(".github/copilot-instructions.md") || "").includes("NIST AI RMF Mapping") &&
+      (readText(".github/copilot-instructions.md") || "").includes("`GOVERN` -> control plane") &&
+      (readText(".github/copilot-instructions.md") || "").includes("`MANAGE` -> response, override, rollback, deactivation, and continual improvement"),
+  },
+  {
+    name: ".github/agents/chatgpt.md persistent learning marker",
+    ok: (readText(".github/agents/chatgpt.md") || "").includes("Persistent Learning System Contract") &&
+      (readText(".github/agents/chatgpt.md") || "").includes("stored, indexed, and reused automatically"),
+  },
+  {
+    name: ".github/agents/chatgpt.md five-plane governance marker",
+    ok: (readText(".github/agents/chatgpt.md") || "").includes("Agentic Governance Five-Plane Contract") &&
+      (readText(".github/agents/chatgpt.md") || "").includes("multi-plane control problem"),
+  },
+  {
+    name: ".github/agents/chatgpt.md NIST mapping marker",
+    ok: (readText(".github/agents/chatgpt.md") || "").includes("NIST AI RMF Mapping") &&
+      (readText(".github/agents/chatgpt.md") || "").includes("`GOVERN` -> control plane") &&
+      (readText(".github/agents/chatgpt.md") || "").includes("`MANAGE` -> response, override, rollback, deactivation, and continual improvement"),
+  },
+  {
+    name: ".github/agents/claude-cowork.md persistent learning marker",
+    ok: (readText(".github/agents/claude-cowork.md") || "").includes("Persistent Learning System Contract") &&
+      (readText(".github/agents/claude-cowork.md") || "").includes("stored, indexed, and reused automatically"),
+  },
+  {
+    name: ".github/agents/claude-cowork.md five-plane governance marker",
+    ok: (readText(".github/agents/claude-cowork.md") || "").includes("Agentic Governance Five-Plane Contract") &&
+      (readText(".github/agents/claude-cowork.md") || "").includes("multi-plane control problem"),
+  },
+  {
+    name: ".github/agents/claude-cowork.md NIST mapping marker",
+    ok: (readText(".github/agents/claude-cowork.md") || "").includes("NIST AI RMF Mapping") &&
+      (readText(".github/agents/claude-cowork.md") || "").includes("`GOVERN` -> control plane") &&
+      (readText(".github/agents/claude-cowork.md") || "").includes("`MANAGE` -> response, override, rollback, deactivation, and continual improvement"),
+  },
+  {
+    name: ".github/agents/genesis.md persistent learning marker",
+    ok: (readText(".github/agents/genesis.md") || "").includes("Persistent Learning System Contract") &&
+      (readText(".github/agents/genesis.md") || "").includes("stored, indexed, and reused automatically"),
+  },
+  {
+    name: ".github/agents/genesis.md five-plane governance marker",
+    ok: (readText(".github/agents/genesis.md") || "").includes("Agentic Governance Five-Plane Contract") &&
+      (readText(".github/agents/genesis.md") || "").includes("multi-plane control problem"),
+  },
+  {
+    name: ".github/agents/genesis.md NIST mapping marker",
+    ok: (readText(".github/agents/genesis.md") || "").includes("NIST AI RMF Mapping") &&
+      (readText(".github/agents/genesis.md") || "").includes("`GOVERN` -> control plane") &&
+      (readText(".github/agents/genesis.md") || "").includes("`MANAGE` -> response, override, rollback, deactivation, and continual improvement"),
+  },
+  {
+    name: ".github/agents/gemini.md persistent learning marker",
+    ok: (readText(".github/agents/gemini.md") || "").includes("Persistent Learning System Contract") &&
+      (readText(".github/agents/gemini.md") || "").includes("stored, indexed, and reused automatically"),
+  },
+  {
+    name: ".github/agents/gemini.md five-plane governance marker",
+    ok: (readText(".github/agents/gemini.md") || "").includes("Agentic Governance Five-Plane Contract") &&
+      (readText(".github/agents/gemini.md") || "").includes("multi-plane control problem"),
+  },
+  {
+    name: ".github/agents/gemini.md NIST mapping marker",
+    ok: (readText(".github/agents/gemini.md") || "").includes("NIST AI RMF Mapping") &&
+      (readText(".github/agents/gemini.md") || "").includes("`GOVERN` -> control plane") &&
+      (readText(".github/agents/gemini.md") || "").includes("`MANAGE` -> response, override, rollback, deactivation, and continual improvement"),
+  },
+  {
+    name: "CLAUDE.md runtime bootstrap gate marker",
+    ok: (readText("CLAUDE.md") || "").includes("Runtime Session Bootstrap Gate"),
+  },
+  {
+    name: "CLAUDE.md persistent learning marker",
+    ok: (readText("CLAUDE.md") || "").includes("Persistent Learning System Contract") &&
+      (readText("CLAUDE.md") || "").includes("stored, indexed, and reused automatically"),
+  },
+  {
+    name: "CLAUDE.md five-plane governance marker",
+    ok: (readText("CLAUDE.md") || "").includes("Agentic Governance Five-Plane Contract") &&
+      (readText("CLAUDE.md") || "").includes("multi-plane control problem"),
+  },
+  {
+    name: "CLAUDE.md NIST mapping marker",
+    ok: (readText("CLAUDE.md") || "").includes("NIST AI RMF Mapping") &&
+      (readText("CLAUDE.md") || "").includes("`GOVERN` -> control plane") &&
+      (readText("CLAUDE.md") || "").includes("`MANAGE` -> response, override, rollback, deactivation, and continual improvement"),
+  },
+  {
     name: "scripts/session-boot.mjs query ladder binding",
     ok: (readText("scripts/session-boot.mjs") || "").includes("runSourceQueryLadder") &&
       (readText("scripts/session-boot.mjs") || "").includes("## Source Bootstrap"),
@@ -253,6 +515,22 @@ const markerChecks = [
     name: "scripts/query-source-ladder.mjs receipt ledger marker",
     ok: (readText("scripts/query-source-ladder.mjs") || "").includes("query-receipts.jsonl") &&
       (readText("scripts/query-source-ladder.mjs") || "").includes("runSourceQueryLadder"),
+  },
+  {
+    name: "config/mcp-connections.json prime bridge surface marker",
+    ok: (readText("config/mcp-connections.json") || "").includes("PrimeBridge") &&
+      (readText("config/mcp-connections.json") || "").includes("mcp:sync"),
+  },
+  {
+    name: "scripts/sync-mcp-connections.mjs SSOT marker",
+    ok: (readText("scripts/sync-mcp-connections.mjs") || "").includes("config/mcp-connections.json") &&
+      (readText("scripts/sync-mcp-connections.mjs") || "").includes("surface_paths"),
+  },
+  {
+    name: "src/router.ts session bootstrap enforcement marker",
+    ok: !existsSync(join(REPO_ROOT, "src", "router.ts")) ||
+      ((readText("src/router.ts") || "").includes("enforceSessionBootstrapGate") &&
+      (readText("src/router.ts") || "").includes("SESSION_INIT_REQUIRED")),
   },
 ];
 

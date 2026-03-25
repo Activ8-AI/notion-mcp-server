@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // managed-by: activ8-ai-context-pack | pack-version: 1.1.0
-// source-sha: 49e7fd4
+// source-sha: a0d4785
 
 import { existsSync, readFileSync } from "node:fs";
 import { safePersistActionReceipt } from "./lib/action-persistence.mjs";

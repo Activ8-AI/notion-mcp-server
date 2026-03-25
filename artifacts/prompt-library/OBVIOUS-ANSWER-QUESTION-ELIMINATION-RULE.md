@@ -1,5 +1,5 @@
 <!-- managed-by: activ8-ai-context-pack | pack-version: 1.1.0 -->
-<!-- source-sha: 49e7fd4 -->
+<!-- source-sha: a0d4785 -->
 # Obvious-Answer Question Elimination Rule
 
 **Charter binding:** Activ8 AI Operational Execution & Accountability Charter.

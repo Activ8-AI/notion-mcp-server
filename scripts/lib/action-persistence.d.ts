@@ -1,5 +1,5 @@
 // managed-by: activ8-ai-context-pack | pack-version: 1.1.0
-// source-sha: 49e7fd4
+// source-sha: a0d4785
 export interface PersistedActionReceipt {
   schema_version: "action_persistence_v1";
   action_id: string;
@@ -16,6 +16,7 @@ export interface PersistedActionReceipt {
   evidence: Record<string, unknown>;
   artifacts: Record<string, unknown>;
   metadata: Record<string, unknown>;
+  recurrence: Record<string, unknown> | null;
   error: {
     message: string;
     code: string | null;
@@ -34,6 +35,7 @@ export function persistActionReceipt(params: {
   evidence?: Record<string, unknown>;
   artifacts?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
+  recurrence?: Record<string, unknown> | null;
   error?: { message?: string; code?: string | null } | null;
 }): PersistedActionReceipt & {
   persistence: {
@@ -42,6 +44,12 @@ export function persistActionReceipt(params: {
     ledger_path: string;
     previous_latest: unknown;
   };
+  recurrence_persistence: {
+    timestamped_path: string;
+    latest_path: string;
+    ledger_path: string;
+    previous_latest: unknown;
+  } | null;
 };
 
 export function safePersistActionReceipt(params: {
@@ -56,6 +64,7 @@ export function safePersistActionReceipt(params: {
   evidence?: Record<string, unknown>;
   artifacts?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
+  recurrence?: Record<string, unknown> | null;
   error?: { message?: string; code?: string | null } | null;
 }):
   | (PersistedActionReceipt & {
@@ -65,5 +74,11 @@ export function safePersistActionReceipt(params: {
         ledger_path: string;
         previous_latest: unknown;
       };
+      recurrence_persistence: {
+        timestamped_path: string;
+        latest_path: string;
+        ledger_path: string;
+        previous_latest: unknown;
+      } | null;
     })
   | null;
